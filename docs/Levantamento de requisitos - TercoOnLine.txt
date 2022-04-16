@@ -1,0 +1,28 @@
+OBJETIVO DO PROJETO
+===================
+Auxiliar aos usuários a rezar os mais diferentes tipos de terço.
+
+DESCRIÇÃO FUNCIONAL
+===================
+O usuário selecionará o tipo de terço a ser rezado e App irá fornecer os textos das orações/contemplações em suas devidas ordens para que ele possa acompanhar e rezar.
+
+FUNCIONALIDADES A OFERECER
+==========================
+- Selecionar o tipo e terço e o App oferecer o terço do dia, de acordo com o tipo do terço selecionado
+- Oferecer a opção de mostrar as orações/contemplações/santos/agracedimentos, do dia do terço, para que o usuário possa acompanhar
+- Realizar a marcação das "bolinhas" para auxiliar no controle da quantidade das orações
+- Agendar dias e horários para alertar para a reza do terço ou deixar recorrente
+- Gerar estatísticos de terços rezados, completos e incompletos
+- Permitir envio de dados estatísticos
+- Versão dos Dados do SQLite
+
+TECNOLOGIAS E FUNCIONALIDADES DO APP
+====================================
+- Dart/Flutter
+- SQLite
+- RESTFul
+
+TECNOLOGIAS E FUNCIONALIDADES DO API
+====================================
+- Dart
+- MySQL
