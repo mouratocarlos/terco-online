@@ -1,27 +1,24 @@
 import 'dart:async';
 
-import 'package:api/models/user.dart';
-import 'package:api/services/user_service.dart';
+import 'package:api/services/terco_service.dart';
 import 'package:shelf/shelf.dart';
 import 'package:shelf_router/shelf_router.dart';
 
-class UserController {
-  UserService service = UserService();
-  User entity = User();
+class TercoController {
+  TercoService service = TercoService();
 
   FutureOr<Response> getAll(Request request) {
     return Response.ok(service.retornaMensagem());
   }
 
   FutureOr<Response> getByUser(Request request, String id) {
-    entity.id = id;
-    return Response.ok('Retorna usuário do id: ${entity.id}');
+    return Response.ok('Id do Terço: $id');
   }
 
-  Router get router => _$UserControllerRouter(this);
+  Router get router => _$TercoControllerRouter(this);
 }
 
-Router _$UserControllerRouter(UserController service) {
+Router _$TercoControllerRouter(TercoController service) {
   final router = Router();
   router.get('/', service.getAll);
   router.get('/<id>', service.getByUser);
