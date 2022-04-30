@@ -1,4 +1,9 @@
 class SantoRezado {
-  int? idSanto;
-  int? quantidade;
+  int idSanto;
+  int quantidade;
+
+  SantoRezado(
+    this.idSanto,
+    this.quantidade,
+  );
 }

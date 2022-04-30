@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:api/controllers/oracao_controller.dart';
 import 'package:api/controllers/terco_controller.dart';
 import 'package:functions_framework/functions_framework.dart';
 import 'package:shelf/shelf.dart';
@@ -10,6 +11,8 @@ FutureOr<Response> routes(Request request) async {
   final router = Router();
 
   router.mount('/terco', TercoController().router);
+
+  router.mount('/oracao', OracaoController().router);
 
   return router(request);
 }
