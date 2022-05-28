@@ -1,4 +1,4 @@
-CREATE TABLE terco (
+CREATE TABLE IF NOT EXISTS public.terco (
   id SERIAL NOT NULL,
   descricao VARCHAR(1000) NOT NULL,
   id_oracao_bolinha_pai_nosso INTEGER,
@@ -6,7 +6,7 @@ CREATE TABLE terco (
   PRIMARY KEY(id)
 );
 
-CREATE TABLE santo (
+CREATE TABLE IF NOT EXISTS public.santo (
   id SERIAL NOT NULL,
   mencao VARCHAR(1000) NOT NULL,
   resposta VARCHAR(1000) NOT NULL,
@@ -14,7 +14,7 @@ CREATE TABLE santo (
   PRIMARY KEY(id)
 );
 
-CREATE TABLE santo_terco (
+CREATE TABLE IF NOT EXISTS public.santo_terco (
   id SERIAL NOT NULL,
   id_terco INTEGER,
   id_santo INTEGER,
@@ -22,7 +22,7 @@ CREATE TABLE santo_terco (
   PRIMARY KEY(id)
 );
 
-CREATE TABLE contemplacao_inicial_final (
+CREATE TABLE IF NOT EXISTS public.contemplacao_inicial_final (
   id SERIAL NOT NULL,
   id_terco INTEGER,
   id_oracao INTEGER,
@@ -31,13 +31,13 @@ CREATE TABLE contemplacao_inicial_final (
   PRIMARY KEY(id)
 );
 
-CREATE TABLE oracao (
+CREATE TABLE IF NOT EXISTS public.oracao (
   id SERIAL NOT NULL,
   texto VARCHAR(1000) NOT NULL,
   PRIMARY KEY(id)
 );
 
-CREATE TABLE misterios (
+CREATE TABLE IF NOT EXISTS public.misterios (
   id SERIAL NOT NULL,
   id_terco INTEGER,
   id_oracao INTEGER,
@@ -46,95 +46,95 @@ CREATE TABLE misterios (
   PRIMARY KEY(id)
 );
 
-CREATE TABLE santo_rezado (
-  id_santo NOT NULL,
+CREATE TABLE IF NOT EXISTS public.santo_rezado (
+  id_santo INTEGER NOT NULL,
   quantidade INTEGER
 );
 
-CREATE TABLE oracao_rezada (
-  id_oracao NOT NULL,
+CREATE TABLE IF NOT EXISTS public.oracao_rezada (
+  id_oracao INTEGER NOT NULL,
   quantidade INTEGER
 );
 
-CREATE TABLE terco_rezado (
-  id_terco NOT NULL,
+CREATE TABLE IF NOT EXISTS public.terco_rezado (
+  id_terco INTEGER NOT NULL,
   quantidade_completo INTEGER,
   quantidade_incompleto INTEGER
 );
 
-ALTER TABLE santo_terco
+ALTER TABLE public.santo_terco
   ADD CONSTRAINT fk_terco_santo_terco FOREIGN KEY (id_terco)
-    REFERENCES terco(id)
+    REFERENCES public.terco(id)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION
     NOT DEFERRABLE;
 
-ALTER TABLE santo_terco
+ALTER TABLE public.santo_terco
   ADD CONSTRAINT fk_santo_santo_terco FOREIGN KEY (id_santo)
-    REFERENCES santo(id)
+    REFERENCES public.santo(id)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION
     NOT DEFERRABLE;
 
-ALTER TABLE santo_rezado
+ALTER TABLE public.santo_rezado
   ADD CONSTRAINT fk_santo_santo_rezado FOREIGN KEY (id_santo)
-    REFERENCES santo(id)
+    REFERENCES public.santo(id)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION
     NOT DEFERRABLE;
 
-ALTER TABLE oracao_rezada
+ALTER TABLE public.oracao_rezada
   ADD CONSTRAINT fk_oracao_oracao_rezada FOREIGN KEY (id_oracao)
-    REFERENCES oracao(id)
+    REFERENCES public.oracao(id)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION
     NOT DEFERRABLE;
 
-ALTER TABLE terco_rezado
+ALTER TABLE public.terco_rezado
   ADD CONSTRAINT fk_terco_terco_rezado FOREIGN KEY (id_terco)
-    REFERENCES terco(id)
+    REFERENCES public.terco(id)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION
     NOT DEFERRABLE;
 
-ALTER TABLE misterios
+ALTER TABLE public.misterios
   ADD CONSTRAINT fk_terco_misterios FOREIGN KEY (id_terco)
-    REFERENCES terco(id)
+    REFERENCES public.terco(id)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION
     NOT DEFERRABLE;
 
-ALTER TABLE misterios
+ALTER TABLE public.misterios
   ADD CONSTRAINT fk_oracao_misterios FOREIGN KEY (id_oracao)
-    REFERENCES oracao(id)
+    REFERENCES public.oracao(id)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION
     NOT DEFERRABLE;
 
-ALTER TABLE contemplacao_inicial_final
+ALTER TABLE public.contemplacao_inicial_final
   ADD CONSTRAINT fk_oracao_contemplacao_inicial_final FOREIGN KEY (id_oracao)
-    REFERENCES oracao(id)
+    REFERENCES public.oracao(id)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION
     NOT DEFERRABLE;
 
-ALTER TABLE contemplacao_inicial_final
+ALTER TABLE public.contemplacao_inicial_final
   ADD CONSTRAINT fk_terco_contemplacao_inicial_final FOREIGN KEY (id_terco)
-    REFERENCES terco(id)
+    REFERENCES public.terco(id)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION
     NOT DEFERRABLE;
 
-ALTER TABLE terco
+ALTER TABLE public.terco
   ADD CONSTRAINT fk_oracao_pai_nosso_terco FOREIGN KEY (id_oracao_bolinha_pai_nosso)
-    REFERENCES oracao(id)
+    REFERENCES public.oracao(id)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION
     NOT DEFERRABLE;
 
-ALTER TABLE terco
+ALTER TABLE public.terco
   ADD CONSTRAINT fk_oracao_ave_maria_terco FOREIGN KEY (id_oracao_bolinha_ave_maria)
-    REFERENCES oracao(id)
+    REFERENCES public.oracao(id)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION
     NOT DEFERRABLE;
