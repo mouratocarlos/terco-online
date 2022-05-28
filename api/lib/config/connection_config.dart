@@ -1,17 +1,29 @@
 import 'package:postgres/postgres.dart';
 
 class ConnectionConfig {
-  void conectar() async {
-    final conn = PostgreSQLConnection(
-      'localhost',
-      5498,
-      'tercodb',
-      username: 'tercoadmin',
-      password: 'tercoonline2022',
-    );
+  final conn = PostgreSQLConnection(
+    "localhost",
+    5498,
+    "tercodb",
+    username: "tercoadmin",
+    password: "tercoonline2022",
+  );
 
+  Future<PostgreSQLResult> query(String query,
+      {Map<String, dynamic>? substitutionValues}) async {
     await conn.open();
-    await conn.close();
-    await conn.query('');
+    return await conn.query(
+      query,
+      substitutionValues: substitutionValues,
+    );
+  }
+
+  Future<List<Map<String, Map<String, dynamic>>>> queryFind(String query,
+      {Map<String, dynamic>? substitutionValues}) async {
+    await conn.open();
+    return await conn.mappedResultsQuery(
+      query,
+      substitutionValues: substitutionValues,
+    );
   }
 }

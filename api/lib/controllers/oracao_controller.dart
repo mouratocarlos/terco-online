@@ -10,11 +10,18 @@ class OracaoController extends BaseController {
     return Response.ok(oracaoService.findById(int.parse(id)));
   }
 
+  Future<Response> post(Request request) async {
+    String body = await request.readAsString();
+    oracaoService.post(body);
+    return Response.ok("Ok");
+  }
+
   Router get router => _$OracaoControllerRouter(this);
 }
 
 Router _$OracaoControllerRouter(OracaoController controller) {
   final router = Router();
   router.get('/<id>', controller.findById);
+  router.post('/', controller.post);
   return router;
 }

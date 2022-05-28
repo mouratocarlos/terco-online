@@ -1,3 +1,4 @@
+import 'package:api/config/connection_config.dart';
 import 'package:api/utils/routes.dart' as function_library;
 import 'package:functions_framework/serve.dart';
 

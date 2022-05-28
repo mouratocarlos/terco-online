@@ -1,4 +1,4 @@
-import 'package:api/models/base_entity.dart';
+import 'package:api/models/entity/base_entity.dart';
 
 class TercoEntity extends BaseEntity {
   String descricao;

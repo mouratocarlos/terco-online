@@ -1,3 +1,1 @@
-class BaseController {
-  //
-}
+class BaseController {}

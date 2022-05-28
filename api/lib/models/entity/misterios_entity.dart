@@ -1,12 +1,12 @@
-import 'package:api/models/base_entity.dart';
+import 'package:api/models/entity/base_entity.dart';
 
-class Misterios extends BaseEntity {
+class MisteriosEntity extends BaseEntity {
   int idTerco;
   int idOracao;
   int ordem;
   String misterio;
 
-  Misterios(
+  MisteriosEntity(
     int id,
     this.idTerco,
     this.idOracao,

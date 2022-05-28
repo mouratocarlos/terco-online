@@ -9,7 +9,14 @@ class TercoController extends BaseController {
   TercoService service = TercoService();
 
   Future<Response> findAll(Request request) async {
-    return Response.ok(jsonEncode(service.findAll()));
+    var obj = await service.findAll();
+    return Response.ok(jsonEncode(obj));
+  }
+
+  Future<Response> post(Request request) async {
+    String body = await request.readAsString();
+    service.post(body);
+    return Response.ok("Ok");
   }
 
   Router get router => _$TercoControllerRouter(this);
@@ -18,5 +25,6 @@ class TercoController extends BaseController {
 Router _$TercoControllerRouter(TercoController controller) {
   final router = Router();
   router.get('/', controller.findAll);
+  router.post('/', controller.post);
   return router;
 }

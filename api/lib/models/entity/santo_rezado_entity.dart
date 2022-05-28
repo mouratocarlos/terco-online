@@ -1,8 +1,8 @@
-class SantoRezado {
+class SantoRezadoEntity {
   int idSanto;
   int quantidade;
 
-  SantoRezado(
+  SantoRezadoEntity(
     this.idSanto,
     this.quantidade,
   );
