@@ -8,4 +8,10 @@ class TercoRezadoEntity {
     this.quantidadeCompleto,
     this.quantidadeIncompleto,
   );
+
+  Map toJson() => {
+        'idTerco': idTerco,
+        'quantidadeCompleto': quantidadeCompleto,
+        'quantidadeIncompleto': quantidadeIncompleto,
+      };
 }

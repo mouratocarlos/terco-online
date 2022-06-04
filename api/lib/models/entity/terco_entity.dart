@@ -11,4 +11,11 @@ class TercoEntity extends BaseEntity {
     this.idOracaoBolinhaAveMaria,
     this.idOracaoBolinhaPaiNosso,
   ) : super(id);
+
+  Map toJson() => {
+        'id': id,
+        'descricao': descricao,
+        'idOracaoBolinhaAveMaria': idOracaoBolinhaAveMaria,
+        'idOracaoBolinhaPaiNosso': idOracaoBolinhaPaiNosso,
+      };
 }

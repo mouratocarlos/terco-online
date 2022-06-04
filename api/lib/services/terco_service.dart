@@ -1,20 +1,18 @@
 import 'dart:convert';
-
-import 'package:api/config/connection_config.dart';
-import 'package:api/models/dto/terco_dto.dart';
 import 'package:api/models/entity/terco_entity.dart';
 import 'package:api/repositories/terco_repository.dart';
 import 'package:api/services/base_service.dart';
 
 class TercoService extends BaseService {
-  final TercoRepository _repository = TercoRepository();
-
-  Future<List<TercoDto>> findAll() async {
-    return await _repository.findAll();
+  @override
+  void instanceRepository() {
+    repository = TercoRepository();
   }
 
-  void post(String obj) async {
-    final _json = jsonDecode(obj);
+  @override
+  void post(String _obj) async {
+    final _json = jsonDecode(_obj);
+
     TercoEntity _terco = TercoEntity(
       0,
       _json['descricao'],
@@ -22,6 +20,6 @@ class TercoService extends BaseService {
       _json['id_oracao_bolinha_pai_nosso'],
     );
 
-    _repository.post(_terco);
+    repository.post(_terco);
   }
 }

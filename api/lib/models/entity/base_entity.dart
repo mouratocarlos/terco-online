@@ -1,9 +1,5 @@
 class BaseEntity {
-  int id;
+  int? id;
 
   BaseEntity(this.id);
-
-  Map toJson() => {
-        'id': id,
-      };
 }

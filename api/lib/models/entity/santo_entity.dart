@@ -11,4 +11,11 @@ class SantoEntity extends BaseEntity {
     this.resposta,
     this.isFavorito,
   ) : super(id);
+
+  Map toJson() => {
+        'id': id,
+        'mencao': mencao,
+        'resposta': resposta,
+        'isFavorito': isFavorito,
+      };
 }

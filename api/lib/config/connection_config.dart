@@ -1,7 +1,7 @@
 import 'package:postgres/postgres.dart';
 
 class ConnectionConfig {
-  final conn = PostgreSQLConnection(
+  final _conn = PostgreSQLConnection(
     "localhost",
     5498,
     "tercodb",
@@ -11,8 +11,8 @@ class ConnectionConfig {
 
   Future<PostgreSQLResult> query(String query,
       {Map<String, dynamic>? substitutionValues}) async {
-    await conn.open();
-    return await conn.query(
+    await _conn.open();
+    return await _conn.query(
       query,
       substitutionValues: substitutionValues,
     );
@@ -20,8 +20,8 @@ class ConnectionConfig {
 
   Future<List<Map<String, Map<String, dynamic>>>> queryFind(String query,
       {Map<String, dynamic>? substitutionValues}) async {
-    await conn.open();
-    return await conn.mappedResultsQuery(
+    await _conn.open();
+    return await _conn.mappedResultsQuery(
       query,
       substitutionValues: substitutionValues,
     );

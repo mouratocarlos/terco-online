@@ -11,4 +11,11 @@ class SantoTercoEntity extends BaseEntity {
     this.idSanto,
     this.ordem,
   ) : super(id);
+
+  Map toJson() => {
+        'id': id,
+        'idTerco': idTerco,
+        'idSanto': idSanto,
+        'ordem': ordem,
+      };
 }

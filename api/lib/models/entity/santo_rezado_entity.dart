@@ -6,4 +6,9 @@ class SantoRezadoEntity {
     this.idSanto,
     this.quantidade,
   );
+
+  Map toJson() => {
+        'idSanto': idSanto,
+        'quantidade': quantidade,
+      };
 }

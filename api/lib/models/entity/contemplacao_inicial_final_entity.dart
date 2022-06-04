@@ -13,4 +13,12 @@ class ContemplacaoInicialFinalEntity extends BaseEntity {
     this.ordem,
     this.tipo,
   ) : super(id);
+
+  Map toJson() => {
+        'id': id,
+        'idTerco': idTerco,
+        'idOracao': idOracao,
+        'ordem': ordem,
+        'tipo': tipo,
+      };
 }

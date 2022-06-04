@@ -6,4 +6,9 @@ class OracaoRezadaEntity {
     this.idOracao,
     this.quantidade,
   );
+
+  Map toJson() => {
+        'idOracao': idOracao,
+        'quantidade': quantidade,
+      };
 }

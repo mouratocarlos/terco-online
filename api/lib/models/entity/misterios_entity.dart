@@ -13,4 +13,12 @@ class MisteriosEntity extends BaseEntity {
     this.ordem,
     this.misterio,
   ) : super(id);
+
+  Map toJson() => {
+        'id': id,
+        'idTerco': idTerco,
+        'idOracao': idOracao,
+        'ordem': ordem,
+        'misterio': misterio,
+      };
 }
