@@ -10,8 +10,8 @@ class OracaoService extends BaseService {
   }
 
   @override
-  void post(String _obj) async {
-    final _json = jsonDecode(_obj);
+  void post(String obj) async {
+    final _json = jsonDecode(obj);
 
     OracaoEntity _oracao = OracaoEntity(
       0,

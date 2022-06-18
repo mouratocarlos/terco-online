@@ -5,6 +5,11 @@ import 'package:api/repositories/base_repository.dart';
 
 class OracaoRepository extends BaseRepository {
   @override
+  void instanceEntity() {
+    entity = OracaoEntity.b();
+  }
+
+  @override
   void post(BaseEntity entity) async {
     ConnectionConfig _connection = ConnectionConfig();
     OracaoEntity _oracao = (entity as OracaoEntity);
@@ -17,26 +22,26 @@ class OracaoRepository extends BaseRepository {
     );
   }
 
-  @override
-  Future<List<OracaoEntity>> findAll() async {
-    ConnectionConfig _connection = ConnectionConfig();
-    List<OracaoEntity> _lista = List<OracaoEntity>.empty(growable: true);
+  // @override
+  // Future<List<OracaoEntity>> findAll() async {
+  //   ConnectionConfig _connection = ConnectionConfig();
+  //   List<OracaoEntity> _lista = List<OracaoEntity>.empty(growable: true);
 
-    String _sql = "select ORA.id, ORA.texto from oracao ORA ";
+  //   String _sql = "select ORA.id, ORA.texto from oracao ORA ";
 
-    await _connection.queryFind(_sql).then((value) {
-      for (final row in value) {
-        OracaoEntity _oracao = OracaoEntity(
-          row["oracao"]?["id"],
-          row["oracao"]?["texto"],
-        );
+  //   await _connection.queryFind(_sql).then((value) {
+  //     for (final row in value) {
+  //       OracaoEntity _oracao = OracaoEntity(
+  //         row["oracao"]?["id"],
+  //         row["oracao"]?["texto"],
+  //       );
 
-        _lista.add(_oracao);
-      }
-    });
+  //       _lista.add(_oracao);
+  //     }
+  //   });
 
-    return _lista;
-  }
+  //   return _lista;
+  // }
 
   @override
   Future<OracaoEntity> findById(int id) async {

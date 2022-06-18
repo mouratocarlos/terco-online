@@ -16,6 +16,10 @@ abstract class BaseController {
     _service = service;
   }
 
+  BaseService get service {
+    return _service;
+  }
+
   Future<Response> post(Request request) async {
     _service.post(await request.readAsString());
     return Response.ok("Ok");

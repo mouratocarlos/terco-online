@@ -5,6 +5,11 @@ import 'package:api/repositories/base_repository.dart';
 
 class SantoRepository extends BaseRepository {
   @override
+  void instanceEntity() {
+    entity = SantoEntity.b();
+  }
+
+  @override
   void post(BaseEntity entity) async {
     ConnectionConfig _connection = ConnectionConfig();
     SantoEntity _santo = (entity as SantoEntity);
@@ -20,32 +25,32 @@ class SantoRepository extends BaseRepository {
     );
   }
 
-  @override
-  Future<List<SantoEntity>> findAll() async {
-    ConnectionConfig _connection = ConnectionConfig();
-    List<SantoEntity> _lista = List<SantoEntity>.empty(growable: true);
+  // @override
+  // Future<List<SantoEntity>> findAll() async {
+  //   ConnectionConfig _connection = ConnectionConfig();
+  //   List<SantoEntity> _lista = List<SantoEntity>.empty(growable: true);
 
-    String _sql = "select SAN.id, " +
-        "SAN.mencao, " +
-        "SAN.resposta, " +
-        "SAN.is_favorito " +
-        "from santo SAN ";
+  //   String _sql = "select SAN.id, " +
+  //       "SAN.mencao, " +
+  //       "SAN.resposta, " +
+  //       "SAN.is_favorito " +
+  //       "from santo SAN ";
 
-    await _connection.queryFind(_sql).then((value) {
-      for (final row in value) {
-        SantoEntity _santo = SantoEntity(
-          row["santo"]?["id"],
-          row["santo"]?["mencao"],
-          row["santo"]?["resposta"],
-          row["santo"]?["is_favorito"],
-        );
+  //   await _connection.queryFind(_sql).then((value) {
+  //     for (final row in value) {
+  //       SantoEntity _santo = SantoEntity(
+  //         row["santo"]?["id"],
+  //         row["santo"]?["mencao"],
+  //         row["santo"]?["resposta"],
+  //         row["santo"]?["is_favorito"],
+  //       );
 
-        _lista.add(_santo);
-      }
-    });
+  //       _lista.add(_santo);
+  //     }
+  //   });
 
-    return _lista;
-  }
+  //   return _lista;
+  // }
 
   @override
   Future<SantoEntity> findById(int id) async {

@@ -1,15 +1,25 @@
 import 'package:api/models/entity/base_entity.dart';
 
 class OracaoEntity extends BaseEntity {
-  String? texto;
+  String? _texto;
 
   OracaoEntity(
     int id,
-    this.texto,
+    this._texto,
   ) : super(id);
+
+  OracaoEntity.b() : super.b();
+
+  String get texto {
+    return _texto!;
+  }
+
+  set texto(String texto) {
+    _texto = texto;
+  }
 
   Map toJson() => {
         'id': id,
-        'texto': texto,
+        'texto': _texto,
       };
 }
