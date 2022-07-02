@@ -16,6 +16,7 @@ abstract class BaseController {
     _service = service;
   }
 
+  // ignore: unnecessary_getters_setters
   BaseService get service {
     return _service;
   }

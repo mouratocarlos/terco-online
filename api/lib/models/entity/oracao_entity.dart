@@ -17,9 +17,4 @@ class OracaoEntity extends BaseEntity {
   set texto(String texto) {
     _texto = texto;
   }
-
-  Map toJson() => {
-        'id': id,
-        'texto': _texto,
-      };
 }

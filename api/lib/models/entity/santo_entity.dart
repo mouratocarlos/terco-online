@@ -37,11 +37,4 @@ class SantoEntity extends BaseEntity {
   set isFavorito(bool isFavorito) {
     _isFavorito = isFavorito;
   }
-
-  Map toJson() => {
-        'id': id,
-        'mencao': _mencao,
-        'resposta': _resposta,
-        'isFavorito': _isFavorito,
-      };
 }

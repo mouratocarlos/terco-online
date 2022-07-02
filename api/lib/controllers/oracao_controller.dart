@@ -8,13 +8,13 @@ class OracaoController extends BaseController {
     service = OracaoService();
   }
 
-  Router get router => _$OracaoControllerRouter(this);
+  Router get router => _oracaoControllerRouter(this);
 }
 
-Router _$OracaoControllerRouter(OracaoController controller) {
-  final _router = Router();
-  _router.post('/', controller.post);
-  _router.get('/', controller.findAll);
-  _router.get('/<id>', controller.findById);
-  return _router;
+Router _oracaoControllerRouter(OracaoController controller) {
+  final router = Router();
+  router.post('/', controller.post);
+  router.get('/', controller.findAll);
+  router.get('/<id>', controller.findById);
+  return router;
 }

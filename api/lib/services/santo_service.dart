@@ -12,15 +12,15 @@ class SantoService extends BaseService {
 
   @override
   void post(String obj) async {
-    final _json = jsonDecode(obj);
+    final json = jsonDecode(obj);
 
-    SantoEntity _santo = SantoEntity(
+    SantoEntity santo = SantoEntity(
       0,
-      _json['mencao'],
-      _json['resposta'],
-      _json['isFavorito'],
+      json['mencao'],
+      json['resposta'],
+      json['isFavorito'],
     );
 
-    repository.post(_santo);
+    repository.post(santo);
   }
 }

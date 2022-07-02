@@ -11,13 +11,13 @@ class OracaoService extends BaseService {
 
   @override
   void post(String obj) async {
-    final _json = jsonDecode(obj);
+    final json = jsonDecode(obj);
 
-    OracaoEntity _oracao = OracaoEntity(
+    OracaoEntity oracao = OracaoEntity(
       0,
-      _json['texto'],
+      json['texto'],
     );
 
-    repository.post(_oracao);
+    repository.post(oracao);
   }
 }

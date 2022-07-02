@@ -8,13 +8,13 @@ class TercoController extends BaseController {
     service = TercoService();
   }
 
-  Router get router => _$TercoControllerRouter(this);
+  Router get router => _tercoControllerRouter(this);
 }
 
-Router _$TercoControllerRouter(TercoController controller) {
-  final _router = Router();
-  _router.post('/', controller.post);
-  _router.get('/', controller.findAll);
-  _router.get('/<id>', controller.findById);
-  return _router;
+Router _tercoControllerRouter(TercoController controller) {
+  final router = Router();
+  router.post('/', controller.post);
+  router.get('/', controller.findAll);
+  router.get('/<id>', controller.findById);
+  return router;
 }

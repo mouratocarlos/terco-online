@@ -11,11 +11,4 @@ class TercoDto extends BaseDto {
     this.oracaoBolinhaAveMaria,
     this.oracaoBolinhaPaiNosso,
   ) : super(id);
-
-  Map toJson() => {
-        'id': id,
-        'descricaoTerco': descricaoTerco,
-        'oracaoBolinhaAveMaria': oracaoBolinhaAveMaria,
-        'oracaoBolinhaPaiNosso': oracaoBolinhaPaiNosso,
-      };
 }

@@ -8,13 +8,13 @@ class SantoController extends BaseController {
     service = SantoService();
   }
 
-  Router get router => _$SantoControllerRouter(this);
+  Router get router => _santoControllerRouter(this);
 }
 
-Router _$SantoControllerRouter(SantoController controller) {
-  final _router = Router();
-  _router.post('/', controller.post);
-  _router.get('/', controller.findAll);
-  _router.get('/<id>', controller.findById);
-  return _router;
+Router _santoControllerRouter(SantoController controller) {
+  final router = Router();
+  router.post('/', controller.post);
+  router.get('/', controller.findAll);
+  router.get('/<id>', controller.findById);
+  return router;
 }

@@ -1,5 +1,4 @@
 import 'dart:mirrors';
-
 import 'package:api/config/connection_config.dart';
 import 'package:api/models/entity/base_entity.dart';
 import 'package:api/utils/utils.dart';
@@ -7,13 +6,11 @@ import 'package:api/utils/utils.dart';
 abstract class BaseRepository {
   final ConnectionConfig _connection = ConnectionConfig();
   late String _tableName;
-  late BaseEntity _entity;
+  BaseEntity? _entity;
 
   BaseRepository() {
     instanceEntity();
   }
-
-  void instanceEntity();
 
   set entity(BaseEntity entity) {
     _entity = entity;
@@ -21,51 +18,76 @@ abstract class BaseRepository {
 
   // ignore: unnecessary_getters_setters
   BaseEntity get entity {
-    return _entity;
+    return _entity!;
+  }
+
+  void instanceEntity();
+
+  void _setFieldsInList(ClassMirror classMirror, InstanceMirror myClassMirror,
+      Map<String, Map<String, dynamic>> row) {
+    for (var m in classMirror.declarations.values) {
+      if ((m is MethodMirror) && (m.isSetter)) {
+        myClassMirror.setField(
+            Symbol(MirrorSystem.getName(m.simpleName).replaceAll("=", "")),
+            row[_tableName]?[Utils.getNameConvetedClassToTableField(
+                MirrorSystem.getName(m.simpleName), "=")]);
+      }
+    }
   }
 
   void post(BaseEntity entity);
 
-  Future<BaseEntity> findById(int id);
-
-  // Future<List<BaseEntity>> findAll();
-  Future<List<BaseEntity>> findAll() async {
+  Future<BaseEntity> findById(int id) async {
     if (_entity != null) {
-      InstanceMirror _MyClassMirror = reflect(_entity);
+      InstanceMirror myClassMirror = reflect(_entity);
       _tableName = Utils.getNameConvetedClassToTableField(
-          MirrorSystem.getName(_MyClassMirror.type.simpleName), "Entity");
+          MirrorSystem.getName(myClassMirror.type.simpleName), "Entity");
     }
 
-    List<BaseEntity> _lista = List<BaseEntity>.empty(growable: true);
-    String _sql = "select * from " + _tableName;
+    String sql = "select * from " + _tableName + " where id =" + id.toString();
 
-    await _connection.queryFind(_sql).then((value) {
+    await _connection.queryFind(sql).then((value) {
       for (final row in value) {
         instanceEntity();
-        InstanceMirror _MyClassMirror = reflect(_entity);
-        ClassMirror _MyClassType = _MyClassMirror.type;
 
-        for (var m in _MyClassType.declarations.values) {
-          if ((m is MethodMirror) && (m.isSetter)) {
-            print(m.simpleName);
-            print(Utils.getNameConvetedClassToTableField(
-                MirrorSystem.getName(m.simpleName), "="));
-            print(row[_tableName]?[Utils.getNameConvetedClassToTableField(
-                MirrorSystem.getName(m.simpleName), "=")]);
-            _MyClassMirror.setField(
-                Symbol(MirrorSystem.getName(m.simpleName).replaceAll("=", "")),
-                row[_tableName]?[Utils.getNameConvetedClassToTableField(
-                    MirrorSystem.getName(m.simpleName), "=")]);
-          }
-        }
+        InstanceMirror myClassMirror = reflect(_entity);
+        ClassMirror myClassType = myClassMirror.type;
+        ClassMirror? superClassMirror = myClassType.superclass;
 
-        _entity.id = 0;
-        print(_entity);
-        _lista.add(_entity);
+        _setFieldsInList(myClassType, myClassMirror, row);
+        _setFieldsInList(superClassMirror!, myClassMirror, row);
       }
     });
 
-    print(_lista);
-    return _lista;
+    return _entity!;
+  }
+
+  Future<List<BaseEntity>> findAll() async {
+    List<BaseEntity> lista = List<BaseEntity>.empty(growable: true);
+
+    if (_entity != null) {
+      InstanceMirror myClassMirror = reflect(_entity);
+      _tableName = Utils.getNameConvetedClassToTableField(
+          MirrorSystem.getName(myClassMirror.type.simpleName), "Entity");
+    }
+
+    String sql = "select * from " + _tableName;
+
+    await _connection.queryFind(sql).then((value) {
+      for (final row in value) {
+        instanceEntity();
+
+        InstanceMirror myClassMirror = reflect(_entity);
+        ClassMirror myClassType = myClassMirror.type;
+        ClassMirror? superClassMirror = myClassType.superclass;
+
+        _setFieldsInList(myClassType, myClassMirror, row);
+        _setFieldsInList(superClassMirror!, myClassMirror, row);
+
+        lista.add(_entity!);
+      }
+    });
+
+    return lista;
   }
 }

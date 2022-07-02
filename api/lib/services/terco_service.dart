@@ -6,20 +6,20 @@ import 'package:api/services/base_service.dart';
 class TercoService extends BaseService {
   @override
   void instanceRepository() {
-    // repository = TercoRepository();
+    repository = TercoRepository();
   }
 
   @override
   void post(String obj) async {
-    final _json = jsonDecode(obj);
+    final json = jsonDecode(obj);
 
-    TercoEntity _terco = TercoEntity(
+    TercoEntity terco = TercoEntity(
       0,
-      _json['descricao'],
-      _json['id_oracao_ave_maria'],
-      _json['id_oracao_bolinha_pai_nosso'],
+      json['descricao'],
+      json['id_oracao_ave_maria'],
+      json['id_oracao_bolinha_pai_nosso'],
     );
 
-    repository.post(_terco);
+    repository.post(terco);
   }
 }
