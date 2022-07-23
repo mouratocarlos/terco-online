@@ -1,17 +1,37 @@
-class TercoRezadoEntity {
-  int idTerco;
-  int quantidadeCompleto;
-  int quantidadeIncompleto;
+import 'package:api/models/entity/base_entity.dart';
+
+class TercoRezadoEntity extends BaseEntity {
+  int? _idTerco;
+  int? _quantidadeCompleto;
+  int? _quantidadeIncompleto;
 
   TercoRezadoEntity(
-    this.idTerco,
-    this.quantidadeCompleto,
-    this.quantidadeIncompleto,
-  );
+    this._idTerco,
+    this._quantidadeCompleto,
+    this._quantidadeIncompleto,
+  ) : super.b();
 
-  Map toJson() => {
-        'idTerco': idTerco,
-        'quantidadeCompleto': quantidadeCompleto,
-        'quantidadeIncompleto': quantidadeIncompleto,
-      };
+  int get idTerco {
+    return _idTerco!;
+  }
+
+  set idTerco(int idTerco) {
+    _idTerco = idTerco;
+  }
+
+  int get quantidadeCompleto {
+    return _quantidadeCompleto!;
+  }
+
+  set quantidadeCompleto(int quantidadeCompleto) {
+    _quantidadeCompleto = quantidadeCompleto;
+  }
+
+  int get quantidadeIncompleto {
+    return _quantidadeIncompleto!;
+  }
+
+  set quantidadeIncompleto(int quantidadeIncompleto) {
+    _quantidadeIncompleto = quantidadeIncompleto;
+  }
 }

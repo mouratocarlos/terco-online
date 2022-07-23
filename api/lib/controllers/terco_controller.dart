@@ -13,8 +13,10 @@ class TercoController extends BaseController {
 
 Router _tercoControllerRouter(TercoController controller) {
   final router = Router();
-  router.post('/', controller.post);
-  router.get('/', controller.findAll);
   router.get('/<id>', controller.findById);
+  router.get('/', controller.findAll);
+  router.post('/', controller.post);
+  router.put('/', controller.put);
+  router.delete('/<id>', controller.deleteById);
   return router;
 }

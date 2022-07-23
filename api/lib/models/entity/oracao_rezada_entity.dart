@@ -1,14 +1,27 @@
-class OracaoRezadaEntity {
-  int idOracao;
-  int quantidade;
+import 'package:api/models/entity/base_entity.dart';
+
+class OracaoRezadaEntity extends BaseEntity {
+  int? _idOracao;
+  int? _quantidade;
 
   OracaoRezadaEntity(
-    this.idOracao,
-    this.quantidade,
-  );
+    this._idOracao,
+    this._quantidade,
+  ) : super.b();
 
-  Map toJson() => {
-        'idOracao': idOracao,
-        'quantidade': quantidade,
-      };
+  int get idOracao {
+    return _idOracao!;
+  }
+
+  set idOracao(int idOracao) {
+    _idOracao = idOracao;
+  }
+
+  int get quantidade {
+    return _quantidade!;
+  }
+
+  set quantidade(int quantidade) {
+    _quantidade = quantidade;
+  }
 }

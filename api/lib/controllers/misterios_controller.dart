@@ -1,17 +1,17 @@
 import 'package:api/controllers/base_controller.dart';
-import 'package:api/services/santo_service.dart';
+import 'package:api/services/misterios_service.dart';
 import 'package:shelf_router/shelf_router.dart';
 
-class SantoController extends BaseController {
+class MisteriosController extends BaseController {
   @override
   void instanceService() {
-    service = SantoService();
+    service = MisteriosService();
   }
 
-  Router get router => _santoControllerRouter(this);
+  Router get router => _misteriosControllerRouter(this);
 }
 
-Router _santoControllerRouter(SantoController controller) {
+Router _misteriosControllerRouter(MisteriosController controller) {
   final router = Router();
   router.get('/<id>', controller.findById);
   router.get('/', controller.findAll);

@@ -1,6 +1,6 @@
 import 'dart:mirrors';
 
-abstract class BaseDto {
+class BaseDto {
   int? _id;
 
   BaseDto(this._id);

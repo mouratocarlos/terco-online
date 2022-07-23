@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:api/controllers/misterios_controller.dart';
 import 'package:api/controllers/oracao_controller.dart';
 import 'package:api/controllers/santo_controller.dart';
 import 'package:api/controllers/terco_controller.dart';
@@ -16,6 +17,8 @@ FutureOr<Response> routes(Request request) async {
   router.mount('/oracao', OracaoController().router);
 
   router.mount('/santo', SantoController().router);
+
+  router.mount('/misterios', MisteriosController().router);
 
   return router(request);
 }

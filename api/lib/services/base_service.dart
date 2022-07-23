@@ -10,22 +10,32 @@ abstract class BaseService {
     instanceRepository();
   }
 
-  set repository(BaseRepository repository) {
-    _repository = repository;
-  }
-
   // ignore: unnecessary_getters_setters
   BaseRepository get repository {
     return _repository;
   }
 
-  Future<List> findAll() async {
-    return await _repository.findAll();
+  set repository(BaseRepository repository) {
+    _repository = repository;
   }
 
   Future<BaseEntity> findById(int id) async {
     return await _repository.findById(id);
   }
 
-  void post(String obj);
+  Future<List> findAll() async {
+    return await _repository.findAll();
+  }
+
+  Future<void> post(String json) async {
+    await _repository.post(json);
+  }
+
+  Future<void> put(String json) async {
+    await _repository.put(json);
+  }
+
+  Future<void> deleteById(int id) async {
+    await _repository.deleteById(id);
+  }
 }
