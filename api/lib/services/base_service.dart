@@ -20,7 +20,11 @@ abstract class BaseService {
   }
 
   Future<BaseEntity> findById(int id) async {
-    return await _repository.findById(id);
+    if (id > 0) {
+      return await _repository.findById(id);
+    } else {
+      throw Exception(["ID não informado"]);
+    }
   }
 
   Future<List> findAll() async {

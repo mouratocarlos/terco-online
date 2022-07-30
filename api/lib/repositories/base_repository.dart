@@ -160,7 +160,7 @@ abstract class BaseRepository {
           MirrorSystem.getName(myClassMirror.type.simpleName), "Entity");
     }
 
-    String sql = "select * from " + _tableName;
+    String sql = "select * from " + _tableName + " ORDER BY id";
 
     await _connection.queryFind(sql).then((value) {
       for (final row in value) {
