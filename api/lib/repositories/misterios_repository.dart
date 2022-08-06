@@ -6,4 +6,14 @@ class MisteriosRepository extends BaseRepository {
   void instanceEntity() {
     entity = MisteriosEntity.b();
   }
+
+  @override
+  void instanceDto() {
+    // entity = TercoEntity.b();
+  }
+
+  @override
+  String sqlFindAll() {
+    return "select * from misterios ORDER BY id";
+  }
 }

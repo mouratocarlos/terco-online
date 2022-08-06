@@ -6,4 +6,14 @@ class SantoRepository extends BaseRepository {
   void instanceEntity() {
     entity = SantoEntity.b();
   }
+
+  @override
+  void instanceDto() {
+    // entity = TercoEntity.b();
+  }
+
+  @override
+  String sqlFindAll() {
+    return "select * from santo ORDER BY id";
+  }
 }

@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:mirrors';
 import 'package:api/config/connection_config.dart';
+import 'package:api/models/dto/base_dto.dart';
 import 'package:api/models/entity/base_entity.dart';
 import 'package:api/utils/utils.dart';
 
@@ -8,11 +9,19 @@ abstract class BaseRepository {
   final ConnectionConfig _connection = ConnectionConfig();
   late String _tableName;
   BaseEntity? _entity;
+  BaseDto? _dto;
+  late String _sqlFindAll;
 
   void instanceEntity();
 
+  void instanceDto();
+
+  String sqlFindAll();
+
   BaseRepository() {
     instanceEntity();
+    instanceDto();
+    _sqlFindAll = sqlFindAll();
   }
 
   // ignore: unnecessary_getters_setters
@@ -24,14 +33,22 @@ abstract class BaseRepository {
     _entity = entity;
   }
 
-  void _setFieldsInList(ClassMirror classMirror, InstanceMirror myClassMirror,
-      Map<String, Map<String, dynamic>> row) {
-    for (var m in classMirror.declarations.values) {
-      if ((m is MethodMirror) && (m.isSetter)) {
+  // ignore: unnecessary_getters_setters
+  BaseDto get dto {
+    return _dto!;
+  }
+
+  set dto(BaseDto dto) {
+    _dto = dto;
+  }
+
+  void _setFieldsInList(Map<String, Map<String, dynamic>> row, Object object) {
+    InstanceMirror myClassMirror = reflect(object);
+
+    for (var obj in row.entries) {
+      for (var m in obj.value.entries) {
         myClassMirror.setField(
-            Symbol(MirrorSystem.getName(m.simpleName).replaceAll("=", "")),
-            row[_tableName]?[Utils.getNameConvetedClassToTableField(
-                MirrorSystem.getName(m.simpleName), "=")]);
+            Symbol(Utils.getNameTableFieldToConvetedClass(m.key)), m.value);
       }
     }
   }
@@ -139,41 +156,29 @@ abstract class BaseRepository {
       for (final row in value) {
         instanceEntity();
 
-        InstanceMirror myClassMirror = reflect(_entity);
-        ClassMirror myClassType = myClassMirror.type;
-        ClassMirror? superClassMirror = myClassType.superclass;
-
-        _setFieldsInList(myClassType, myClassMirror, row);
-        _setFieldsInList(superClassMirror!, myClassMirror, row);
+        _setFieldsInList(row, _entity!);
       }
     });
 
     return _entity!;
   }
 
-  Future<List<BaseEntity>> findAll() async {
-    List<BaseEntity> lista = List<BaseEntity>.empty(growable: true);
+  Future<List<BaseDto>> findAll() async {
+    List<BaseDto> lista = List<BaseDto>.empty(growable: true);
 
-    if (_entity != null) {
-      InstanceMirror myClassMirror = reflect(_entity);
+    if (_dto != null) {
+      InstanceMirror myClassMirror = reflect(_dto);
       _tableName = Utils.getNameConvetedClassToTableField(
-          MirrorSystem.getName(myClassMirror.type.simpleName), "Entity");
+          MirrorSystem.getName(myClassMirror.type.simpleName), "Dto");
     }
 
-    String sql = "select * from " + _tableName + " ORDER BY id";
-
-    await _connection.queryFind(sql).then((value) {
+    await _connection.queryFind(_sqlFindAll).then((value) {
       for (final row in value) {
-        instanceEntity();
+        instanceDto();
 
-        InstanceMirror myClassMirror = reflect(_entity);
-        ClassMirror myClassType = myClassMirror.type;
-        ClassMirror? superClassMirror = myClassType.superclass;
+        _setFieldsInList(row, _dto!);
 
-        _setFieldsInList(myClassType, myClassMirror, row);
-        _setFieldsInList(superClassMirror!, myClassMirror, row);
-
-        lista.add(_entity!);
+        lista.add(_dto!);
       }
     });
 

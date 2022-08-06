@@ -6,4 +6,14 @@ class OracaoRepository extends BaseRepository {
   void instanceEntity() {
     entity = OracaoEntity.b();
   }
+
+  @override
+  void instanceDto() {
+    // entity = TercoEntity.b();
+  }
+
+  @override
+  String sqlFindAll() {
+    return "select * from oracao ORDER BY id";
+  }
 }

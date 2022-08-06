@@ -13,4 +13,14 @@ class Utils {
       return textReplaced.substring(0, textReplaced.length);
     }
   }
+
+  static String getNameTableFieldToConvetedClass(String text) {
+    try {
+      return text.replaceAllMapped(RegExp("(.*?)_([a-zA-Z])"), (match) {
+        return match.group(1)! + match.group(2)!.toUpperCase();
+      });
+    } catch (_) {
+      return text;
+    }
+  }
 }
