@@ -1,6 +1,9 @@
 import 'dart:mirrors';
 
+import 'package:api/config/annotations/id.dart';
+
 class BaseEntity {
+  @Id()
   int? _id;
 
   BaseEntity(this._id);

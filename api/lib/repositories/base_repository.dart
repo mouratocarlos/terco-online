@@ -10,18 +10,26 @@ abstract class BaseRepository {
   late String _tableName;
   BaseEntity? _entity;
   BaseDto? _dto;
-  late String _sqlFindAll;
+  late String _sqlFind;
+  late bool _existsWhere;
+  late String _aliasTable;
+  // ignore: constant_identifier_names
+  static const RESULT_FILTER_SQL = '#RESULT_FILTER_SQL#';
 
   void instanceEntity();
 
   void instanceDto();
 
-  String sqlFindAll();
+  String sqlFind();
+
+  String aliasTable();
 
   BaseRepository() {
     instanceEntity();
     instanceDto();
-    _sqlFindAll = sqlFindAll();
+
+    _sqlFind = sqlFind();
+    _aliasTable = aliasTable();
   }
 
   // ignore: unnecessary_getters_setters
@@ -40,6 +48,12 @@ abstract class BaseRepository {
 
   set dto(BaseDto dto) {
     _dto = dto;
+  }
+
+  String resultFilterSql([bool existsWhere = false]) {
+    _existsWhere = existsWhere;
+
+    return RESULT_FILTER_SQL;
   }
 
   void _setFieldsInList(Map<String, Map<String, dynamic>> row, Object object) {
@@ -143,24 +157,30 @@ abstract class BaseRepository {
     await _connection.query(sql);
   }
 
-  Future<BaseEntity> findById(int id) async {
-    if (_entity != null) {
-      InstanceMirror myClassMirror = reflect(_entity);
+  Future<BaseDto> findById(int id) async {
+    if (_dto != null) {
+      InstanceMirror myClassMirror = reflect(_dto);
       _tableName = Utils.getNameConvetedClassToTableField(
-          MirrorSystem.getName(myClassMirror.type.simpleName), "Entity");
+          MirrorSystem.getName(myClassMirror.type.simpleName), "Dto");
     }
 
-    String sql = "select * from " + _tableName + " where id =" + id.toString();
+    if (_existsWhere) {
+      _sqlFind = _sqlFind.replaceAll(
+          RESULT_FILTER_SQL, ' and ' + _aliasTable + '.id = ' + id.toString());
+    } else {
+      _sqlFind = _sqlFind.replaceAll(RESULT_FILTER_SQL,
+          ' where ' + _aliasTable + '.id = ' + id.toString());
+    }
 
-    await _connection.queryFind(sql).then((value) {
+    await _connection.queryFind(_sqlFind).then((value) {
       for (final row in value) {
-        instanceEntity();
+        instanceDto();
 
-        _setFieldsInList(row, _entity!);
+        _setFieldsInList(row, _dto!);
       }
     });
 
-    return _entity!;
+    return _dto!;
   }
 
   Future<List<BaseDto>> findAll() async {
@@ -172,7 +192,9 @@ abstract class BaseRepository {
           MirrorSystem.getName(myClassMirror.type.simpleName), "Dto");
     }
 
-    await _connection.queryFind(_sqlFindAll).then((value) {
+    _sqlFind = _sqlFind.replaceAll(RESULT_FILTER_SQL, '');
+
+    await _connection.queryFind(_sqlFind).then((value) {
       for (final row in value) {
         instanceDto();
 

@@ -1,4 +1,4 @@
-import 'package:api/models/entity/base_entity.dart';
+import 'package:api/models/dto/base_dto.dart';
 import 'package:api/repositories/base_repository.dart';
 
 abstract class BaseService {
@@ -19,7 +19,7 @@ abstract class BaseService {
     _repository = repository;
   }
 
-  Future<BaseEntity> findById(int id) async {
+  Future<BaseDto> findById(int id) async {
     if (id > 0) {
       return await _repository.findById(id);
     } else {

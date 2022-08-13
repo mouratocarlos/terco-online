@@ -1,0 +1,3 @@
+class Entity {
+  const Entity();
+}

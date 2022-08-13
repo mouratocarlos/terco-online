@@ -14,7 +14,7 @@ class TercoRepository extends BaseRepository {
   }
 
   @override
-  String sqlFindAll() {
+  String sqlFind() {
     return "select " +
         "          TER.id " +
         "        , TER.descricao as DESCRICAO_TERCO " +
@@ -23,7 +23,13 @@ class TercoRepository extends BaseRepository {
         "          from terco TER " +
         "    inner join oracao ORA on ORA.id = TER.id_oracao_bolinha_ave_maria " +
         "    inner join oracao ORP on ORP.id = TER.id_oracao_bolinha_pai_nosso " +
+        resultFilterSql() +
         "   order by " +
         "         TER.id ";
+  }
+
+  @override
+  String aliasTable() {
+    return 'TER';
   }
 }
