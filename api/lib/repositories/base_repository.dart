@@ -72,8 +72,8 @@ abstract class BaseRepository {
     }
   }
 
-  void _consistPropertiesTable({bool consistSuperClass = false}) {
-    for (var m in _myClassType.declarations.values) {
+  void _consistPropertiesTable(ClassMirror classType) {
+    for (var m in classType.declarations.values) {
       Object? obj = Utils.getAnnotation(m, Column);
 
       if (!(obj == null)) {
@@ -96,23 +96,6 @@ abstract class BaseRepository {
         }
       }
     }
-
-    if (consistSuperClass) {
-      for (var m in _superClassMirror.declarations.values) {
-        Object? obj = Utils.getAnnotation(m, Column);
-
-        if (!(obj == null)) {
-          Column column = (obj as Column);
-
-          if (column.length != null) {
-            throw Exception(
-                ["${column.name} com tamanho maior que ${column.length}"]);
-          } else if (column.nullable) {
-            throw Exception(["${column.name} não pode estar vazio"]);
-          }
-        }
-      }
-    }
   }
 
   String resultFilterSql([bool existsWhere = false]) {
@@ -128,7 +111,7 @@ abstract class BaseRepository {
     Utils.setValuesInEntity(objJson, _myClassMirror, _myClassType);
     Utils.setFieldInMapInsert(map, _myClassMirror, _myClassType);
 
-    _consistPropertiesTable();
+    _consistPropertiesTable(_myClassType);
 
     String rows = map.keys.toString();
     String rowsName = rows.replaceAll("(", "(@");
@@ -147,7 +130,8 @@ abstract class BaseRepository {
     Utils.setValuesInEntity(objJson, _myClassMirror, _superClassMirror);
     Utils.setFieldInMapInsert(map, _myClassMirror, _myClassType);
 
-    _consistPropertiesTable(consistSuperClass: true);
+    _consistPropertiesTable(_myClassType);
+    _consistPropertiesTable(_superClassMirror);
 
     String rows = map.keys.toString();
     String rowsName = rows.replaceAll("(", "(@");
