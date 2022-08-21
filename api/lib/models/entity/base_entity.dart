@@ -1,9 +1,11 @@
 import 'dart:mirrors';
 
+import 'package:api/config/annotations/column.dart';
 import 'package:api/config/annotations/id.dart';
 
 class BaseEntity {
   @Id()
+  @Column(name: "id", nullable: true)
   int? _id;
 
   BaseEntity(this._id);

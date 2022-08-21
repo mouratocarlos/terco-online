@@ -1,21 +1,25 @@
 import 'package:api/config/annotations/column.dart';
 import 'package:api/config/annotations/entity.dart';
 import 'package:api/config/annotations/join_column.dart';
+import 'package:api/config/annotations/join_table.dart';
 import 'package:api/config/annotations/table.dart';
 import 'package:api/models/entity/base_entity.dart';
 
 @Entity()
-@Table("terco")
+@Table(name: "terco")
 class TercoEntity extends BaseEntity {
-  @Column("descricao", true, 1000)
+  @Column(name: "descricao", nullable: true, length: 255)
   String? _descricao;
 
-  @Column("id_oracao_bolinha_pai_nosso", true)
-  @JoinColumn("oracao")
+  @Column(name: "id_oracao_bolinha_pai_nosso", nullable: true)
+  @JoinTable(
+      name: "oracao",
+      joinColumns: {JoinColumn(name: "id_oracao_bolinha_pai_nosso")})
   int? _idOracaoBolinhaPaiNosso;
 
-  @Column("id_oracao_bolinha_ave_maria", true)
-  @JoinColumn("oracao")
+  @JoinTable(
+      name: "oracao",
+      joinColumns: {JoinColumn(name: "id_oracao_bolinha_ave_maria")})
   int? _idOracaoBolinhaAveMaria;
 
   TercoEntity(

@@ -1,11 +1,11 @@
 class Column {
   final String name;
   final bool nullable;
-  final int? lenght;
+  final int? length;
 
-  const Column(
-    this.name,
-    this.nullable, [
-    this.lenght,
-  ]);
+  const Column({
+    required this.name,
+    required this.nullable,
+    this.length,
+  });
 }

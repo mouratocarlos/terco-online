@@ -1,7 +1,7 @@
 class Table {
   final String name;
 
-  const Table(
-    this.name,
-  );
+  const Table({
+    required this.name,
+  });
 }

@@ -1,5 +1,7 @@
 import 'dart:convert';
 import 'dart:mirrors';
+import 'package:api/config/annotations/column.dart';
+import 'package:api/config/annotations/table.dart';
 import 'package:api/config/connection_config.dart';
 import 'package:api/models/dto/base_dto.dart';
 import 'package:api/models/entity/base_entity.dart';
@@ -7,14 +9,17 @@ import 'package:api/utils/utils.dart';
 
 abstract class BaseRepository {
   final ConnectionConfig _connection = ConnectionConfig();
+  // ignore: constant_identifier_names
+  static const RESULT_FILTER_SQL = '#RESULT_FILTER_SQL#';
   late String _tableName;
-  BaseEntity? _entity;
-  BaseDto? _dto;
   late String _sqlFind;
   late bool _existsWhere;
   late String _aliasTable;
-  // ignore: constant_identifier_names
-  static const RESULT_FILTER_SQL = '#RESULT_FILTER_SQL#';
+  late InstanceMirror _myClassMirror;
+  late ClassMirror _myClassType;
+  late ClassMirror _superClassMirror;
+  BaseEntity? _entity;
+  BaseDto? _dto;
 
   void instanceEntity();
 
@@ -30,6 +35,12 @@ abstract class BaseRepository {
 
     _sqlFind = sqlFind();
     _aliasTable = aliasTable();
+
+    _myClassMirror = reflect(_entity);
+    _myClassType = _myClassMirror.type;
+    _superClassMirror = _myClassType.superclass!;
+
+    _setTableName();
   }
 
   // ignore: unnecessary_getters_setters
@@ -50,61 +61,74 @@ abstract class BaseRepository {
     _dto = dto;
   }
 
+  void _setTableName() {
+    Object? obj = Utils.getAnnotation(_myClassType, Table);
+
+    if (!(obj == null)) {
+      _tableName = (obj as Table).name;
+    } else {
+      _tableName = Utils.getNameConvetedClassToTableField(
+          MirrorSystem.getName(_myClassMirror.type.simpleName), "Entity");
+    }
+  }
+
+  void _consistPropertiesTable({bool consistSuperClass = false}) {
+    for (var m in _myClassType.declarations.values) {
+      Object? obj = Utils.getAnnotation(m, Column);
+
+      if (!(obj == null)) {
+        Column column = (obj as Column);
+        String field = MirrorSystem.getName(
+                Symbol(Utils.getNameTableFieldToConvetedClass(column.name)))
+            .replaceAll("=", "");
+        var value = _myClassMirror.getField(Symbol(field)).reflectee;
+
+        if (column.length != null) {
+          if (((value as String).length > column.length!)) {
+            throw Exception([
+              "Campo ${column.name} com tamanho maior que ${column.length}"
+            ]);
+          }
+        } else if (column.nullable) {
+          if ((_myClassMirror.getField(Symbol(field)).reflectee == null)) {
+            throw Exception(["${column.name} não pode estar vazio"]);
+          }
+        }
+      }
+    }
+
+    if (consistSuperClass) {
+      for (var m in _superClassMirror.declarations.values) {
+        Object? obj = Utils.getAnnotation(m, Column);
+
+        if (!(obj == null)) {
+          Column column = (obj as Column);
+
+          if (column.length != null) {
+            throw Exception(
+                ["${column.name} com tamanho maior que ${column.length}"]);
+          } else if (column.nullable) {
+            throw Exception(["${column.name} não pode estar vazio"]);
+          }
+        }
+      }
+    }
+  }
+
   String resultFilterSql([bool existsWhere = false]) {
     _existsWhere = existsWhere;
 
     return RESULT_FILTER_SQL;
   }
 
-  void _setFieldsInList(Map<String, Map<String, dynamic>> row, Object object) {
-    InstanceMirror myClassMirror = reflect(object);
-
-    for (var obj in row.entries) {
-      for (var m in obj.value.entries) {
-        myClassMirror.setField(
-            Symbol(Utils.getNameTableFieldToConvetedClass(m.key)), m.value);
-      }
-    }
-  }
-
-  void _setFieldInMapInsert(Map<String, dynamic> map,
-      InstanceMirror myClassMirror, ClassMirror classMirror) {
-    for (var m in classMirror.declarations.values) {
-      if ((m is MethodMirror) && (m.isGetter)) {
-        String field = MirrorSystem.getName(m.simpleName).replaceAll("=", "");
-
-        final conteudo = <String, dynamic>{
-          Utils.getNameConvetedClassToTableField(field, ""):
-              myClassMirror.getField(Symbol(field)).reflectee,
-        };
-
-        map.addEntries(conteudo.entries);
-      }
-    }
-  }
-
-  void _setValuesInEntity(
-      Map map, InstanceMirror myClassMirror, ClassMirror classMirror) {
-    for (var m in classMirror.declarations.values) {
-      if ((m is MethodMirror) && (m.isSetter)) {
-        myClassMirror.setField(
-            Symbol(MirrorSystem.getName(m.simpleName).replaceAll("=", "")),
-            map[MirrorSystem.getName(m.simpleName).replaceAll("=", "")]);
-      }
-    }
-  }
-
   Future<void> post(String json) async {
-    InstanceMirror myClassMirror = reflect(_entity);
-    ClassMirror myClassType = myClassMirror.type;
     final objJson = jsonDecode(json);
     Map<String, dynamic> map = {};
 
-    _tableName = Utils.getNameConvetedClassToTableField(
-        MirrorSystem.getName(myClassMirror.type.simpleName), "Entity");
+    Utils.setValuesInEntity(objJson, _myClassMirror, _myClassType);
+    Utils.setFieldInMapInsert(map, _myClassMirror, _myClassType);
 
-    _setValuesInEntity(objJson, myClassMirror, myClassType);
-    _setFieldInMapInsert(map, myClassMirror, myClassType);
+    _consistPropertiesTable();
 
     String rows = map.keys.toString();
     String rowsName = rows.replaceAll("(", "(@");
@@ -116,54 +140,38 @@ abstract class BaseRepository {
   }
 
   Future<void> put(String json) async {
-    InstanceMirror myClassMirror = reflect(_entity);
-    ClassMirror myClassType = myClassMirror.type;
-    ClassMirror? superClassMirror = myClassType.superclass;
     final objJson = jsonDecode(json);
     Map<String, dynamic> map = {};
 
-    _tableName = Utils.getNameConvetedClassToTableField(
-        MirrorSystem.getName(myClassMirror.type.simpleName), "Entity");
+    Utils.setValuesInEntity(objJson, _myClassMirror, _myClassType);
+    Utils.setValuesInEntity(objJson, _myClassMirror, _superClassMirror);
+    Utils.setFieldInMapInsert(map, _myClassMirror, _myClassType);
 
-    _setValuesInEntity(objJson, myClassMirror, myClassType);
-    _setValuesInEntity(objJson, myClassMirror, superClassMirror!);
-    _setFieldInMapInsert(map, myClassMirror, myClassType);
+    _consistPropertiesTable(consistSuperClass: true);
 
     String rows = map.keys.toString();
     String rowsName = rows.replaceAll("(", "(@");
     rowsName = rowsName.replaceAll(" ", " @");
 
-    await _connection.query(
-        "UPDATE " +
-            _tableName +
-            " SET " +
-            rows +
-            " = " +
-            rowsName +
-            " WHERE id = " +
-            _entity!.id.toString(),
-        substitutionValues: map);
+    String sqlPut = "UPDATE " +
+        _tableName +
+        " SET " +
+        rows +
+        " = " +
+        rowsName +
+        " WHERE id = " +
+        _entity!.id.toString();
+
+    await _connection.query(sqlPut, substitutionValues: map);
   }
 
   Future<void> deleteById(int id) async {
-    if (_entity != null) {
-      InstanceMirror myClassMirror = reflect(_entity);
-      _tableName = Utils.getNameConvetedClassToTableField(
-          MirrorSystem.getName(myClassMirror.type.simpleName), "Entity");
-    }
-
     String sql = "delete from " + _tableName + " where id =" + id.toString();
 
     await _connection.query(sql);
   }
 
   Future<BaseDto> findById(int id) async {
-    if (_dto != null) {
-      InstanceMirror myClassMirror = reflect(_dto);
-      _tableName = Utils.getNameConvetedClassToTableField(
-          MirrorSystem.getName(myClassMirror.type.simpleName), "Dto");
-    }
-
     if (_existsWhere) {
       _sqlFind = _sqlFind.replaceAll(
           RESULT_FILTER_SQL, ' and ' + _aliasTable + '.id = ' + id.toString());
@@ -176,7 +184,7 @@ abstract class BaseRepository {
       for (final row in value) {
         instanceDto();
 
-        _setFieldsInList(row, _dto!);
+        Utils.setFieldsInList(row, _dto!);
       }
     });
 
@@ -186,19 +194,13 @@ abstract class BaseRepository {
   Future<List<BaseDto>> findAll() async {
     List<BaseDto> lista = List<BaseDto>.empty(growable: true);
 
-    if (_dto != null) {
-      InstanceMirror myClassMirror = reflect(_dto);
-      _tableName = Utils.getNameConvetedClassToTableField(
-          MirrorSystem.getName(myClassMirror.type.simpleName), "Dto");
-    }
-
     _sqlFind = _sqlFind.replaceAll(RESULT_FILTER_SQL, '');
 
     await _connection.queryFind(_sqlFind).then((value) {
       for (final row in value) {
         instanceDto();
 
-        _setFieldsInList(row, _dto!);
+        Utils.setFieldsInList(row, _dto!);
 
         lista.add(_dto!);
       }
