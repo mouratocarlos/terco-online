@@ -1,7 +1,10 @@
 import 'dart:convert';
 import 'dart:mirrors';
 import 'package:api/config/annotations/column.dart';
+import 'package:api/config/annotations/not_empty.dart';
+import 'package:api/config/annotations/not_null.dart';
 import 'package:api/config/annotations/table.dart';
+import 'package:api/config/annotations/transient.dart';
 import 'package:api/config/connection_config.dart';
 import 'package:api/models/dto/base_dto.dart';
 import 'package:api/models/entity/base_entity.dart';
@@ -74,24 +77,59 @@ abstract class BaseRepository {
 
   void _consistPropertiesTable(ClassMirror classType) {
     for (var m in classType.declarations.values) {
-      Object? obj = Utils.getAnnotation(m, Column);
+      Object? column = Utils.getAnnotation(m, Column);
+      Object? notNull = Utils.getAnnotation(m, NotNull);
+      Object? notEmpty = Utils.getAnnotation(m, NotEmpty);
+      Object? transient = Utils.getAnnotation(m, Transient);
+      dynamic value;
 
-      if (!(obj == null)) {
-        Column column = (obj as Column);
-        String field = MirrorSystem.getName(
-                Symbol(Utils.getNameTableFieldToConvetedClass(column.name)))
-            .replaceAll("=", "");
-        var value = _myClassMirror.getField(Symbol(field)).reflectee;
+      if ((!(transient == null)) && (transient is Transient)) {
+        continue;
+      }
 
+      String field = m.simpleName
+          .toString()
+          .replaceAll('Symbol("_', '')
+          .replaceAll('")', '');
+
+      try {
+        value = _myClassMirror.getField(Symbol(field)).reflectee;
+      } catch (_) {
+        continue;
+      }
+
+      if ((!(column == null)) && (column is Column)) {
         if (column.length != null) {
-          if (((value as String).length > column.length!)) {
-            throw Exception([
-              "Campo ${column.name} com tamanho maior que ${column.length}"
-            ]);
+          if (value is String) {
+            if (((value).length > column.length!)) {
+              throw Exception([
+                "Campo ${column.name} com tamanho maior que ${column.length}"
+              ]);
+            }
+          } else if (value is int) {
+            if (((value).toString().length > column.length!)) {
+              throw Exception([
+                "Campo ${column.name} com tamanho maior que ${column.length}"
+              ]);
+            }
           }
         } else if (column.nullable) {
           if ((_myClassMirror.getField(Symbol(field)).reflectee == null)) {
             throw Exception(["${column.name} não pode estar vazio"]);
+          }
+        }
+      }
+
+      if ((!(notNull == null)) && (notNull is NotNull)) {
+        if (value == null) {
+          throw Exception([notNull.message ?? "Não pode estar nulo"]);
+        }
+      }
+
+      if ((!(notEmpty == null)) && (notEmpty is NotEmpty)) {
+        if ((value is String)) {
+          if (value.isEmpty) {
+            throw Exception([notEmpty.message ?? "Não pode estar vazio"]);
           }
         }
       }

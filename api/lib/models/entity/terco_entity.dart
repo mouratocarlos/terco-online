@@ -2,6 +2,8 @@ import 'package:api/config/annotations/column.dart';
 import 'package:api/config/annotations/entity.dart';
 import 'package:api/config/annotations/join_column.dart';
 import 'package:api/config/annotations/join_table.dart';
+import 'package:api/config/annotations/not_empty.dart';
+import 'package:api/config/annotations/not_null.dart';
 import 'package:api/config/annotations/table.dart';
 import 'package:api/models/entity/base_entity.dart';
 
@@ -9,17 +11,18 @@ import 'package:api/models/entity/base_entity.dart';
 @Table(name: "terco")
 class TercoEntity extends BaseEntity {
   @Column(name: "descricao", nullable: true, length: 255)
+  @NotEmpty(message: "O campo descricao nao pode estar vazio")
+  @NotNull(message: "O campo descricao nao pode estar nulo")
   String? _descricao;
 
   @Column(name: "id_oracao_bolinha_pai_nosso", nullable: true)
-  @JoinTable(
-      name: "oracao",
-      joinColumns: {JoinColumn(name: "id_oracao_bolinha_pai_nosso")})
+  @NotNull()
+  @JoinTable(name: "oracao", joinColumns: {JoinColumn(name: "id")})
   int? _idOracaoBolinhaPaiNosso;
 
-  @JoinTable(
-      name: "oracao",
-      joinColumns: {JoinColumn(name: "id_oracao_bolinha_ave_maria")})
+  @Column(name: "id_oracao_bolinha_ave_maria", nullable: true)
+  @JoinTable(name: "oracao", joinColumns: {JoinColumn(name: "id")})
+  @NotNull()
   int? _idOracaoBolinhaAveMaria;
 
   TercoEntity(

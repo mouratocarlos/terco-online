@@ -1,0 +1,3 @@
+class Transient {
+  const Transient();
+}
