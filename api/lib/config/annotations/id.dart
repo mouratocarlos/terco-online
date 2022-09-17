@@ -1,3 +1,0 @@
-class Id {
-  const Id();
-}

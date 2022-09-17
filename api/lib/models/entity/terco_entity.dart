@@ -1,11 +1,11 @@
-import 'package:api/config/annotations/column.dart';
-import 'package:api/config/annotations/entity.dart';
-import 'package:api/config/annotations/join_column.dart';
-import 'package:api/config/annotations/join_table.dart';
-import 'package:api/config/annotations/not_empty.dart';
-import 'package:api/config/annotations/not_null.dart';
-import 'package:api/config/annotations/table.dart';
 import 'package:api/models/entity/base_entity.dart';
+import 'package:dartnate/annotations/column.dart';
+import 'package:dartnate/annotations/entity.dart';
+import 'package:dartnate/annotations/join_column.dart';
+import 'package:dartnate/annotations/join_table.dart';
+import 'package:dartnate/annotations/not_empty.dart';
+import 'package:dartnate/annotations/not_null.dart';
+import 'package:dartnate/annotations/table.dart';
 
 @Entity()
 @Table(name: "terco")

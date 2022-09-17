@@ -1,4 +1,4 @@
-import 'dart:mirrors';
+import 'package:reflectable/mirrors.dart';
 
 class Utils {
   static String getNameConvetedClassToTableField(String text,

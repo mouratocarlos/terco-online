@@ -1,14 +1,14 @@
 import 'dart:convert';
-import 'dart:mirrors';
-import 'package:api/config/annotations/column.dart';
-import 'package:api/config/annotations/not_empty.dart';
-import 'package:api/config/annotations/not_null.dart';
-import 'package:api/config/annotations/table.dart';
-import 'package:api/config/annotations/transient.dart';
 import 'package:api/config/connection_config.dart';
 import 'package:api/models/dto/base_dto.dart';
 import 'package:api/models/entity/base_entity.dart';
 import 'package:api/utils/utils.dart';
+import 'package:dartnate/annotations/column.dart';
+import 'package:dartnate/annotations/not_empty.dart';
+import 'package:dartnate/annotations/not_null.dart';
+import 'package:dartnate/annotations/table.dart';
+import 'package:dartnate/annotations/transient.dart';
+import 'package:reflectable/mirrors.dart';
 
 abstract class BaseRepository {
   final ConnectionConfig _connection = ConnectionConfig();

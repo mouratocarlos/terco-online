@@ -1,7 +1,6 @@
-import 'dart:mirrors';
-
-import 'package:api/config/annotations/column.dart';
-import 'package:api/config/annotations/id.dart';
+import 'package:dartnate/annotations/column.dart';
+import 'package:dartnate/annotations/id.dart';
+import 'package:reflectable/mirrors.dart';
 
 class BaseEntity {
   @Id()
