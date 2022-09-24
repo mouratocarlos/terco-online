@@ -1,5 +1,5 @@
 import 'dart:convert';
-import 'package:api/config/connection_config.dart';
+import 'dart:io';
 import 'package:api/models/dto/base_dto.dart';
 import 'package:api/models/entity/base_entity.dart';
 import 'package:api/utils/utils.dart';
@@ -8,10 +8,13 @@ import 'package:dartnate/annotations/not_empty.dart';
 import 'package:dartnate/annotations/not_null.dart';
 import 'package:dartnate/annotations/table.dart';
 import 'package:dartnate/annotations/transient.dart';
-import 'package:reflectable/mirrors.dart';
+import 'dart:mirrors';
+import 'package:yaml/yaml.dart';
+import 'package:dartnate/config/dartnate_configuration.dart';
+import 'package:dartnate/config/postgres/postgres_connection.dart';
 
 abstract class BaseRepository {
-  final ConnectionConfig _connection = ConnectionConfig();
+  late PostgresConnection _connection;
   // ignore: constant_identifier_names
   static const RESULT_FILTER_SQL = '#RESULT_FILTER_SQL#';
   late String _tableName;
@@ -35,6 +38,21 @@ abstract class BaseRepository {
   BaseRepository() {
     instanceEntity();
     instanceDto();
+
+    File file = new File('dartnate_config.yaml');
+    String yamlString = file.readAsStringSync();
+    Map yaml = loadYaml(yamlString);
+
+    DartnateConfiguration config = DartnateConfiguration(
+      yaml['server'],
+      yaml['port'],
+      yaml['dbName'],
+      yaml['password'],
+      yaml['username'],
+      yaml['jdbc'],
+    );
+
+    _connection = config.conn;
 
     _sqlFind = sqlFind();
     _aliasTable = aliasTable();

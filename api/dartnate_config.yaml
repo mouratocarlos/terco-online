@@ -1,0 +1,6 @@
+server: "localhost"
+port: 5498
+dbName: "tercodb"
+username: "tercoadmin"
+password: "tercoonline2022"
+jdbc: "POSTGRESQL"
