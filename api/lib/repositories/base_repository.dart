@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:io';
 import 'package:api/models/dto/base_dto.dart';
 import 'package:api/models/entity/base_entity.dart';
 import 'package:api/utils/utils.dart';
@@ -9,12 +8,10 @@ import 'package:dartnate/annotations/not_null.dart';
 import 'package:dartnate/annotations/table.dart';
 import 'package:dartnate/annotations/transient.dart';
 import 'dart:mirrors';
-import 'package:yaml/yaml.dart';
-import 'package:dartnate/config/dartnate_configuration.dart';
-import 'package:dartnate/config/postgres/postgres_connection.dart';
+import 'package:dartnate/connection/dartnate_connection.dart';
 
 abstract class BaseRepository {
-  late PostgresConnection _connection;
+  late DartnateConnection _connection;
   // ignore: constant_identifier_names
   static const RESULT_FILTER_SQL = '#RESULT_FILTER_SQL#';
   late String _tableName;
@@ -39,20 +36,7 @@ abstract class BaseRepository {
     instanceEntity();
     instanceDto();
 
-    File file = new File('dartnate_config.yaml');
-    String yamlString = file.readAsStringSync();
-    Map yaml = loadYaml(yamlString);
-
-    DartnateConfiguration config = DartnateConfiguration(
-      yaml['server'],
-      yaml['port'],
-      yaml['dbName'],
-      yaml['password'],
-      yaml['username'],
-      yaml['jdbc'],
-    );
-
-    _connection = config.conn;
+    _connection = DartnateConnection();
 
     _sqlFind = sqlFind();
     _aliasTable = aliasTable();
@@ -173,9 +157,9 @@ abstract class BaseRepository {
     String rowsName = rows.replaceAll("(", "(@");
     rowsName = rowsName.replaceAll(" ", " @");
 
-    await _connection.query(
+    await _connection.post(
         "INSERT INTO " + _tableName + " " + rows + " VALUES " + rowsName + " ",
-        substitutionValues: map);
+        map);
   }
 
   Future<void> put(String json) async {
@@ -202,13 +186,13 @@ abstract class BaseRepository {
         " WHERE id = " +
         _entity!.id.toString();
 
-    await _connection.query(sqlPut, substitutionValues: map);
+    await _connection.put(sqlPut, map);
   }
 
   Future<void> deleteById(int id) async {
     String sql = "delete from " + _tableName + " where id =" + id.toString();
 
-    await _connection.query(sql);
+    await _connection.delete(sql);
   }
 
   Future<BaseDto> findById(int id) async {
@@ -220,7 +204,7 @@ abstract class BaseRepository {
           ' where ' + _aliasTable + '.id = ' + id.toString());
     }
 
-    await _connection.queryFind(_sqlFind).then((value) {
+    await _connection.findAll(_sqlFind).then((value) {
       for (final row in value) {
         instanceDto();
 
@@ -236,7 +220,7 @@ abstract class BaseRepository {
 
     _sqlFind = _sqlFind.replaceAll(RESULT_FILTER_SQL, '');
 
-    await _connection.queryFind(_sqlFind).then((value) {
+    await _connection.findAll(_sqlFind).then((value) {
       for (final row in value) {
         instanceDto();
 
