@@ -1,2 +1,3 @@
 /docs/*.autosave
 /docs/*.dia~
+.vscode/

@@ -8,7 +8,9 @@
   <li>SQLite</li>
 </ul>
 <h3> 📁 Acesso ao projeto </h3>
-<p>Você pode acessar os arquivos do projeto clicando <a href="#">aqui</a>.</p>
+<p>Acesso aos arquivos do projeto <a href="https://github.com/mouratocarlos/terco-online/tree/develop/api">API</a>.</p>
+<h3> Modelagem de Dados:</h3>
+<img src="https://github.com/mouratocarlos/terco-online/raw/develop/docs/Modelagem.png"/>
 <h3> Autores </h3>
 <div id="grupo-autores" display="block">
     <div id="grupo-imagens">

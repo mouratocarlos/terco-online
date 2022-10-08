@@ -1,0 +1,12 @@
+name: api
+description: Terco online project
+
+environment:
+  sdk: '>=2.12.0'
+
+dependencies:
+  functions_framework: ^0.4.0
+  shelf: ^1.0.0
+  shelf_router: ^1.1.2
+  shelf_router_generator: ^1.0.2
+  dartnate: ^0.0.20

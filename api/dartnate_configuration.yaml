@@ -1,0 +1,7 @@
+database_connection:
+  server: localhost
+  port: 5498
+  database_name: tercodb
+  username: tercoadmin
+  password: tercoonline2022
+  connection_driver: postgresql
