@@ -1,5 +1,7 @@
 import 'dart:mirrors';
 
+import 'package:api/utils/response_data.dart';
+
 class Utils {
   static String getNameConvetedClassToTableField(String text,
       [String textRemove = ""]) {
@@ -74,6 +76,38 @@ class Utils {
         myClassMirror.setField(
             Symbol(MirrorSystem.getName(m.simpleName).replaceAll("=", "")),
             map[MirrorSystem.getName(m.simpleName).replaceAll("=", "")]);
+      }
+    }
+  }
+
+  static ResponseData returnObjectResponse(int status, String message,
+      {Object? data}) {
+    if (status != 200) {
+      if (message.contains("Exception: [")) {
+        message = message.substring(12, message.length - 1);
+      } else if (message.contains("Exception: ")) {
+        message = message.substring(11, message.length);
+      }
+
+      return ResponseData(
+        status: status,
+        tipo: 'ERROR',
+        message: message,
+      );
+    } else {
+      if (data == null) {
+        return ResponseData(
+          status: status,
+          tipo: '',
+          message: message,
+        );
+      } else {
+        return ResponseData(
+          status: status,
+          tipo: 'OBJETO',
+          message: message,
+          data: data,
+        );
       }
     }
   }

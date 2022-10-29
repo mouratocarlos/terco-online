@@ -9,4 +9,4 @@ dependencies:
   shelf: ^1.0.0
   shelf_router: ^1.1.2
   shelf_router_generator: ^1.0.2
-  dartnate: ^0.0.20
+  dartnate: ^0.0.31

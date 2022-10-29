@@ -40,6 +40,10 @@ abstract class BaseService {
   }
 
   Future<void> deleteById(int id) async {
-    await _repository.deleteById(id);
+    if (id > 0) {
+      await _repository.deleteById(id);
+    } else {
+      throw Exception(["ID não informado"]);
+    }
   }
 }
